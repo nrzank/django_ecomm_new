@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import generics, views, status
 from rest_framework.response import Response
 
-from authorization.serializers import UserRegisterSerializer, UserLoginSerializer
+from authorization.serializers import UserRegisterSerializer
 
 
 # Create your views here.

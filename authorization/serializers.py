@@ -14,9 +14,4 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
-
-    username = serializers.CharField()
-    password = serializers.CharField()
-
 

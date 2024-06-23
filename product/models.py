@@ -18,10 +18,18 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    IN_STOCK,  LOW_STOCK, OUT_OF_STOCK = 'in_stock', 'low_stock', 'out_of_stock'
+
+    STOCK = (
+        (IN_STOCK, 'В наличии'),
+        (LOW_STOCK, 'Мало на складе'),
+        (OUT_OF_STOCK, 'Нет в наличии'),
+    )
+
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField()
+    stock = models.IntegerField(choices=STOCK, default=IN_STOCK)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
