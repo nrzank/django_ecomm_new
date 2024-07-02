@@ -1,12 +1,10 @@
-from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
-from rest_framework import generics, views, status
-from rest_framework.response import Response
+from rest_framework import generics
+
 
 from authorization.serializers import UserRegisterSerializer
 
-
-# Create your views here.
 
 class RegisterAPIView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
