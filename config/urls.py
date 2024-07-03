@@ -4,10 +4,12 @@ from django.urls import path, include
 
 
 
+# project_name/urls.py
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('products/', include('product.urls')),
-    path('categories/', include('product.urls')),
-    path('auth/', include('authorization.urls')),
-    path('cart/', include('cart.urls')),
+    path('shop/', include('product.urls')),
+    path('auth/', include('authorization.urls'))
 ]

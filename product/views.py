@@ -1,21 +1,27 @@
+import django_filters
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from django_filters import rest_framework as filters
 
-from product.models import (Product,
-                            Category,
+from product.filters import ProductFilterSet
+from product.models import (Category,
+                            Product,
                             Cart,
                             CartItem,
                             Order,
-                            OrderItem)
-from product.serializers import (ProductSerializer,
-                                 CategorySerializer,
-                                 CartItemSerializer,
+                            OrderItem,
+                            Review,
+                            Wishlist)
+from product.serializers import (CategorySerializer,
+                                 ProductSerializer,
                                  CartSerializer,
+                                 CartItemSerializer,
                                  OrderSerializer,
-                                 OrderItemSerializer)
+                                 ReviewSerializer,
+                                 WishlistSerializer)
 
 
-# Category Views
+# Category views
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -26,12 +32,20 @@ class CategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
 
 
-
-
-# Product Views
+# Product views
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filterset_class = ProductFilterSet
+
+    # фильтры с помощью DjangoFilterBackend
+    # filter_backends = [filters.DjangoFilterBackend]
+    #  filterset_fields = ['name']
+    # filterset_fields = {
+    #     'name': ['exact', 'contains', 'icontains'],
+    #     'price': ['gte', 'lte'],
+    #     'created_at': ['gte', 'lte']
+    # }
 
 
 class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -39,16 +53,13 @@ class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
 
 
-# Cart Views
+# Cart views
 class CartListCreateView(generics.ListCreateAPIView):
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Cart.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -59,7 +70,7 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Cart.objects.filter(user=self.request.user)
 
 
-# CartItem Views
+# CartItem views
 class CartItemListCreateView(generics.ListCreateAPIView):
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated]
@@ -82,7 +93,7 @@ class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
         return CartItem.objects.filter(cart=cart)
 
 
-# Order Views
+# Order views
 class OrderListCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
@@ -99,18 +110,17 @@ class OrderListCreateView(generics.ListCreateAPIView):
                                 status='created',
                                 total_price=total_price)
 
-        cart_items = CartItem.objects.filter(cart=cart)
+        cart_items = Cart.items.all()
         for item in cart_items:
             OrderItem.objects.create(order=order,
                                      product=item.product,
                                      quantity=item.quantity,
                                      price=item.total_price)
 
-        cart_items.delete()
+            Cart.item.all().delete()
 
 
-
-class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
+class OrderDetailView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
@@ -118,24 +128,37 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Order.objects.filter(user=self.request.user)
 
 
-# OrderItem Views (for completeness)
-class OrderItemListCreateView(generics.ListCreateAPIView):
-    serializer_class = OrderItemSerializer
-    permission_classes = [IsAuthenticated]
+# Review views
+class ReviewListCreateView(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
-    def get_queryset(self):
-        order = Order.objects.get(user=self.request.user)
-        return OrderItem.objects.filter(order=order)
+
+class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+# Wishlist Views
+class WishlistListCreateView(generics.ListCreateAPIView):
+    queryset = Wishlist.objects.all()
+    serializer_class = WishlistSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        order = Order.objects.get(user=self.request.user)
-        serializer.save(order=order)
+        serializer.save(user=self.request.user)
 
 
-class OrderItemDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = OrderItemSerializer
+class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Wishlist.objects.all()
+    serializer_class = WishlistSerializer
     permission_classes = [IsAuthenticated]
 
+
+# Category products views
+class ProductByCategoryListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
     def get_queryset(self):
-        order = Order.objects.get(user=self.request.user)
-        return OrderItem.objects.filter(order=order)
+        category_id = self.kwargs['category_id']
+        return Product.objects.filter(category_id=category_id)

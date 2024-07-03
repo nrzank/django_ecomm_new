@@ -41,12 +41,12 @@ INSTALLED_APPS = [
 
     'product',
     'authorization',
-    'cart',
-    'orders',
+
 
     'django_extensions',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters'
 
 ]
 

@@ -1,17 +1,23 @@
 from rest_framework import serializers
-from product.models import Product, Category, Cart, Order, OrderItem, CartItem
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ('name', 'description', 'price', 'stock', 'category')
+from .models import Category, Product, Cart, CartItem, Order, OrderItem, Review, Wishlist
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'description')
+        fields = '__all__'
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
 
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -20,20 +26,10 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
-    total_price = serializers.SerializerMethodField()
-    total_quantity = serializers.SerializerMethodField()
-
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cart
+        model = Order
         fields = '__all__'
-
-    def get_total_price(self, obj):
-        return obj.total_price()
-
-    def get_total_quantity(self, obj):
-        return obj.total_quantity()
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -42,16 +38,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
-        fields = ('user',
-                  'full_name',
-                  'email',
-                  'address ',
-                  'city',
-                  'phone',
-                  'postal_code',
-                  'country_code',
-                  'order_key',
-                  'billing_status')
+        model = Review
+        fields = '__all__'
+
+
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wishlist
+        fields = '__all__'

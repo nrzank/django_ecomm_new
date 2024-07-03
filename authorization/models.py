@@ -13,6 +13,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=150, blank=True)
     mobile = models.CharField(max_length=50, blank=True)
 
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
