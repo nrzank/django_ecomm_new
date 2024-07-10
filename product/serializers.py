@@ -44,8 +44,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
 class WishlistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wishlist

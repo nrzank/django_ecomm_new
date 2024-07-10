@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, null=False, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -14,7 +14,6 @@ class Category(models.Model):
 
 class Product(models.Model):
     IN_STOCK, LOW_STOCK, OUT_OF_STOCK = 'in_stock', 'low_stock', 'out_of_stock'
-
     STOCK = (
         (IN_STOCK, 'В наличии'),
         (LOW_STOCK, 'Мало на складе'),
@@ -104,7 +103,6 @@ class Review(models.Model):
 
     def __str__(self):
         return f'Review({self.product}, {self.user}, {self.rating})'
-
 
 
 class Wishlist(models.Model):

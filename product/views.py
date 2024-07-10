@@ -1,24 +1,11 @@
-import django_filters
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from django_filters import rest_framework as filters
 
-from product.filters import ProductFilterSet
-from product.models import (Category,
-                            Product,
-                            Cart,
-                            CartItem,
-                            Order,
-                            OrderItem,
-                            Review,
-                            Wishlist)
-from product.serializers import (CategorySerializer,
-                                 ProductSerializer,
-                                 CartSerializer,
-                                 CartItemSerializer,
-                                 OrderSerializer,
-                                 ReviewSerializer,
-                                 WishlistSerializer)
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import ProductFilterSet
+from .models import (Category, Product, Cart, CartItem, Order, OrderItem, Review, Wishlist)
+from .serializers import (CategorySerializer, ProductSerializer, CartSerializer, CartItemSerializer, OrderSerializer,
+                          ReviewSerializer, WishlistSerializer)
 
 
 # Category views
@@ -37,15 +24,9 @@ class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filterset_class = ProductFilterSet
-
-    # фильтры с помощью DjangoFilterBackend
-    # filter_backends = [filters.DjangoFilterBackend]
-    #  filterset_fields = ['name']
-    # filterset_fields = {
-    #     'name': ['exact', 'contains', 'icontains'],
-    #     'price': ['gte', 'lte'],
-    #     'created_at': ['gte', 'lte']
-    # }
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['price', 'created_at', 'updated_at']
+    search_fields = ['name', 'description']
 
 
 class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -158,6 +139,10 @@ class WishlistDetailView(generics.RetrieveUpdateDestroyAPIView):
 # Category products views
 class ProductByCategoryListView(generics.ListAPIView):
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_class = ProductFilterSet
+    ordering_fields = ['price', 'created_at', 'updated_at']
+    search_fields = ['name', 'description']
 
     def get_queryset(self):
         category_id = self.kwargs['category_id']

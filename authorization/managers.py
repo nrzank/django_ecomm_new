@@ -1,22 +1,18 @@
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.hashers import make_password
-
+from product.models import Cart, Wishlist
 
 
 class UserManager(BaseUserManager):
-
     def create_user(self, username, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', False)
-
         if not username:
-            raise ValueError('ValueError')
+            raise ValueError('The Username field must be set')
         user = self.model(username=username, **extra_fields)
-        user.password = make_password(password)
+        user.set_password(password)
+        user.save(using=self._db)
+        Cart.objects.create(user=user)
+        Wishlist.objects.create(user=user)
         return user
 
     def create_superuser(self, username, password=None, **extra_fields):
-        return self.create_user(username, password, is_staff=True, is_active=True)
-
-
-
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(username, password, **extra_fields)

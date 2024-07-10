@@ -11,7 +11,6 @@ class ProductFilterSet(filters.DjangoFilterBackend):
         model = Product
         fields = {
             'name': ['exact', 'contains', 'icontains'],
-            # 'price': ['gte', 'lte'],
-            # 'created_at': ['gte', 'lte']
+
         }
 
