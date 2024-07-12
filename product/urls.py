@@ -1,6 +1,6 @@
 from django.urls import path
 from product import views
-from product.views import ViewHistoryListCreateView
+
 
 urlpatterns = [
 
@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('jsonplaceholder/', views.APIPosts.as_view()),
 
-    path('view_history/', ViewHistoryListCreateView.as_view(), name='view-history')
+
 
 
 

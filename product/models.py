@@ -32,6 +32,8 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.pk} {self.name}'
+
+
 class Cart(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -78,14 +80,5 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'OrderItem({self.product}, {self.quantity})'
-
-
-class ViewHistory(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    view_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.user.username} viewed {self.product.name} on {self.view_date}'
 
 

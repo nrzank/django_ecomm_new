@@ -1,6 +1,5 @@
 import json
 from rest_framework import generics, filters, status, views, permissions
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,12 +8,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .exeptions import PermissionDeniedException
 from .filters import ProductFilterSet
-from .models import Category, Product, Cart, CartItem, Order, OrderItem, ViewHistory
+from .models import Category, Product, Cart, CartItem, Order, OrderItem
 from .serializers import (CategorySerializer,
                           ProductSerializer,
                           CartSerializer,
                           CartItemSerializer,
-                          OrderSerializer, ViewHistorySerializer
+                          OrderSerializer
                           )
 
 
@@ -212,13 +211,3 @@ class APIPosts(views.APIView):
         return Response(json.loads(posts.content))
 
 
-class ViewHistoryListCreateView(generics.ListCreateAPIView):
-    queryset = ViewHistory.objects.all()
-    serializer_class = ViewHistorySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return ViewHistory.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Cart, CartItem, Order, OrderItem, ViewHistory
+from .models import Category, Product, Cart, CartItem, Order, OrderItem
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -50,7 +50,3 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ViewHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ViewHistory
-        fields = ['id', 'user', 'product', 'view_date']
