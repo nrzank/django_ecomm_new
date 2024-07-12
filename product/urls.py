@@ -1,47 +1,34 @@
 from django.urls import path
-from product.views import (CategoryListCreateView,
-                           CategoryRetrieveUpdateDestroyView,
-                           ProductListCreateView,
-                           ProductRetrieveUpdateDestroyView,
-                           CartListCreateView,
-                           CartDetailView,
-                           CartItemListCreateView,
-                           CartItemDetailView,
-                           OrderListCreateView,
-                           OrderDetailView,
-                           ReviewListCreateView,
-                           ReviewDetailView,
-                           WishlistListCreateView,
-                           WishlistDetailView,
-                           ProductByCategoryListView)
-
-
-
-
-
-
+from product import views
+from product.views import ViewHistoryListCreateView
 
 urlpatterns = [
 
-    path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
-    path('categories/<int:pk>/', CategoryRetrieveUpdateDestroyView.as_view(), name='category-detail'),
+    path('categories/', views.CategoryListCreateView.as_view(), name='category-list-create'),
+    path('categories/<int:pk>/', views.CategoryRetrieveUpdateDestroyView.as_view(), name='category-detail'),
 
-    path('categories/<int:category_id>/products/', ProductByCategoryListView.as_view(), name='product-by-category'),
-    path('products/', ProductListCreateView.as_view(), name='product-list-create'),
-    path('products/<int:pk>/', ProductRetrieveUpdateDestroyView.as_view(), name='product-detail'),
+    path('categories/<int:category_id>/products/', views.ProductByCategoryListView.as_view(), name='product-by-category'),
+    path('products/', views.ProductListCreateView.as_view(), name='product-list-create'),
+    path('products/<int:pk>/', views.ProductRetrieveUpdateDestroyView.as_view(), name='product-detail'),
 
-    path('cart/', CartListCreateView.as_view(), name='cart-list-create'),
-    path('cart/<int:pk>/', CartDetailView.as_view(), name='cart-detail'),
+    path('cart/', views.CartListCreateView.as_view(), name='cart-list-create'),
+    path('cart/<int:pk>/', views.CartDetailView.as_view(), name='cart-detail'),
 
-    path('cart/items/', CartItemListCreateView.as_view(), name='cartitem-list-create'),
-    path('cart/items/<int:pk>/', CartItemDetailView.as_view(), name='cartitem-detail'),
+    path('cart/items/', views.CartItemListCreateView.as_view(), name='cartitem-list-create'),
+    path('cart/items/<int:pk>/', views.CartItemDetailView.as_view(), name='cartitem-detail'),
+    path('cart/clear/', views.CartClearView.as_view(), name='cart-clear'),
 
-    path('orders/', OrderListCreateView.as_view(), name='order-list-create'),
-    path('orders/<int:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('orders/', views.OrderListCreateView.as_view(), name='order-list-create'),
+    path('orders/<int:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
 
-    path('reviews/', ReviewListCreateView.as_view(), name='review-list-create'),
-    path('reviews/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
+    path('jsonplaceholder/', views.APIPosts.as_view()),
 
-    path('wishlists/', WishlistListCreateView.as_view(), name='wishlist-list-create'),
-    path('wishlists/<int:pk>/', WishlistDetailView.as_view(), name='wishlist-detail'),
+    path('view_history/', ViewHistoryListCreateView.as_view(), name='view-history')
+
+
+
+
+
+
+
 ]

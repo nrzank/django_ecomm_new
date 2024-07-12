@@ -1,4 +1,4 @@
-from product.models import Cart, Wishlist
+from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
@@ -8,8 +8,11 @@ class UserManager(BaseUserManager):
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+
+
+        from product.models import Cart
         Cart.objects.create(user=user)
-        Wishlist.objects.create(user=user)
+
         return user
 
     def create_superuser(self, username, password=None, **extra_fields):

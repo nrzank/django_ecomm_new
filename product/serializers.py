@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Cart, CartItem, Order, OrderItem, Review, Wishlist
+from .models import Category, Product, Cart, CartItem, Order, OrderItem, ViewHistory
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -11,13 +11,20 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'price', 'stock', 'image', 'category', 'user', 'created_at',
+                  'updated_at']
+        read_only_fields = ['user']
 
 
 class CartSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField()
+
     class Meta:
         model = Cart
         fields = '__all__'
+
+    def get_total_price(self, obj):
+        return sum(item.product.price * item.quantity for item in obj.items.all())
 
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -27,9 +34,14 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
         fields = '__all__'
+
+    def get_total_price(self, obj):
+        return sum(item.product.price * item.quantity for item in obj.items.all())
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -38,13 +50,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ViewHistorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Review
-        fields = '__all__'
-
-
-class WishlistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Wishlist
-        fields = '__all__'
+        model = ViewHistory
+        fields = ['id', 'user', 'product', 'view_date']
